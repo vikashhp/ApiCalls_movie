@@ -13,7 +13,9 @@ function App() {
     setisLoading(true);
     setError(null);
     try {
-      const response = await fetch("https://swapi.py4e.com/api/films");
+      const response = await fetch(
+        "https://react-post-request-6ba75-default-rtdb.firebaseio.com/movies.json"
+      );
 
       if (!response.ok) {
         throw new Error("Something went wrong ....Retrying");
@@ -21,16 +23,26 @@ function App() {
 
       const data = await response.json();
 
-      const transformed = data.results.map((data) => {
-        return {
-          id: data.episode_id,
-          title: data.title,
-          releaseDate: data.release_date,
-          openingText: data.opening_crawl,
-        };
-      });
+      const loadedData = [];
+      for (const key in data) {
+        loadedData.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate,
+        });
+      }
 
-      setMovie(transformed);
+      // const transformed = data.results.map((data) => {
+      //   return {
+      //     id: data.episode_id,
+      //     title: data.title,
+      //     releaseDate: data.release_date,
+      //     openingText: data.opening_crawl,
+      //   };
+      // });
+
+      setMovie(loadedData);
     } catch (error) {
       setError(error.message);
     }
@@ -46,8 +58,20 @@ function App() {
     setError(null);
   };
 
-  const addMovieHandler = (movie) => {
-    console.log(movie);
+  const addMovieHandler = async (movie) => {
+    // console.log(movie);
+    const response_data = await fetch(
+      "https://react-post-request-6ba75-default-rtdb.firebaseio.com/movies.json",
+      {
+        method: "POST",
+        body: JSON.stringify(movie),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response_data.json();
+    console.log(data);
   };
 
   return (
@@ -56,7 +80,7 @@ function App() {
         <AddMovie onAddMovie={addMovieHandler} />
       </section>
       <section>
-        <button>Fetch Movies</button>
+        <button onClick={movieHandler}>Fetch Movies</button>
         <button
           style={{ backgroundColor: "red", color: "white" }}
           onClick={cancelHandler}
