@@ -1,4 +1,5 @@
-import React, { useEffect, useState,useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import AddMovie from "./components/AddMovie";
 
 import MoviesList from "./components/MoviesList";
 import "./App.css";
@@ -7,8 +8,6 @@ function App() {
   const [movie, setMovie] = useState([]);
   const [isLoading, setisLoading] = useState(false);
   const [error, setError] = useState(null);
-
-
 
   const movieHandler = useCallback(async () => {
     setisLoading(true);
@@ -36,21 +35,28 @@ function App() {
       setError(error.message);
     }
     setisLoading(false);
-  },[]);
+  }, []);
 
-  useEffect(()=>{
-    movieHandler()
-  },[movieHandler])
+  useEffect(() => {
+    movieHandler();
+  }, [movieHandler]);
 
   const cancelHandler = () => {
-    setisLoading(false)
-    setError(null)
+    setisLoading(false);
+    setError(null);
+  };
+
+  const addMovieHandler = (movie) => {
+    console.log(movie);
   };
 
   return (
     <React.Fragment>
       <section>
-        <button >Fetch Movies</button>
+        <AddMovie onAddMovie={addMovieHandler} />
+      </section>
+      <section>
+        <button>Fetch Movies</button>
         <button
           style={{ backgroundColor: "red", color: "white" }}
           onClick={cancelHandler}
