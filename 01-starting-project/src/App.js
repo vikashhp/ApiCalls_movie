@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState,useCallback } from "react";
 
 import MoviesList from "./components/MoviesList";
 import "./App.css";
@@ -8,11 +8,13 @@ function App() {
   const [isLoading, setisLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const movieHandler = async () => {
+
+
+  const movieHandler = useCallback(async () => {
     setisLoading(true);
     setError(null);
     try {
-      const response = await fetch("https://swapi.py4e.com/api/film");
+      const response = await fetch("https://swapi.py4e.com/api/films");
 
       if (!response.ok) {
         throw new Error("Something went wrong ....Retrying");
@@ -34,7 +36,11 @@ function App() {
       setError(error.message);
     }
     setisLoading(false);
-  };
+  },[]);
+
+  useEffect(()=>{
+    movieHandler()
+  },[movieHandler])
 
   const cancelHandler = () => {
     setisLoading(false)
@@ -44,7 +50,7 @@ function App() {
   return (
     <React.Fragment>
       <section>
-        <button onClick={movieHandler}>Fetch Movies</button>
+        <button >Fetch Movies</button>
         <button
           style={{ backgroundColor: "red", color: "white" }}
           onClick={cancelHandler}
